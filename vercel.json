@@ -1,18 +1,4 @@
 {
-  "env": [
-    {
-      "key": "DATABASE_URL",
-      "description": "Database connection URL for Prisma"
-    },
-    {
-      "key": "NEXTAUTH_SECRET",
-      "description": "NextAuth secret for JWT signing"
-    },
-    {
-      "key": "NEXTAUTH_URL",
-      "description": "Your app URL"
-    }
-  ],
   "buildCommand": "npm run build",
   "installCommand": "npm install --legacy-peer-deps"
 }
