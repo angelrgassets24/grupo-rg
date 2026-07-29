@@ -1,0 +1,117 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String     @id @default(cuid())
+  email     String     @unique
+  password  String
+  name      String
+  role      String     @default("user")
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+
+  loans      Loan[]
+  leases     Lease[]
+  payments   Payment[]
+  quotes     Quote[]
+}
+
+model Client {
+  id        String     @id @default(cuid())
+  name      String
+  email     String?
+  phone     String?
+  rfc       String?
+  address   String?
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+
+  loans      Loan[]
+  leases     Lease[]
+  payments   Payment[]
+}
+
+model Loan {
+  id            String     @id @default(cuid())
+  clientId      String
+  client        Client     @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  userId        String
+  user          User       @relation(fields: [userId], references: [id])
+
+  capital       Float
+  monthlyRate   Float
+  iva           Float
+  term          Int
+  startDate     DateTime
+  endDate       DateTime
+
+  description   String?
+  status        String     @default("active")
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
+
+  payments      Payment[]
+}
+
+model Lease {
+  id            String     @id @default(cuid())
+  clientId      String
+  client        Client     @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  userId        String
+  user          User       @relation(fields: [userId], references: [id])
+
+  assetValue    Float
+  firstRent     Float
+  monthlyRent   Float
+  iva           Float
+  term          Int
+  residual      Float
+  startDate     DateTime
+  endDate       DateTime
+
+  description   String?
+  status        String     @default("active")
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt
+
+  payments      Payment[]
+}
+
+model Payment {
+  id        String     @id @default(cuid())
+  loanId    String?
+  loan      Loan?      @relation(fields: [loanId], references: [id], onDelete: Cascade)
+  leaseId   String?
+  lease     Lease?     @relation(fields: [leaseId], references: [id], onDelete: Cascade)
+  clientId  String
+  client    Client     @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  userId    String
+  user      User       @relation(fields: [userId], references: [id])
+
+  amount    Float
+  month     Int
+  year      Int
+  paidDate  DateTime?
+  status    String     @default("pending")
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+}
+
+model Quote {
+  id        String     @id @default(cuid())
+  userId    String
+  user      User       @relation(fields: [userId], references: [id])
+
+  type      String
+  clientName String?
+  data      String
+
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+}
