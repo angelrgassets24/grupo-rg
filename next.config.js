@@ -5,7 +5,6 @@ const nextConfig = {
     useTypeScriptCli: true,
   },
   skipTrailingSlashRedirect: true,
-  swcMinify: true,
 };
 
 module.exports = nextConfig;
